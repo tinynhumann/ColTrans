@@ -16,10 +16,14 @@ public class Decryptor {
     String secretTxt;
     String known;
     List<Integer> testBlockLenghts = new ArrayList<>();
+    
     int matchThreshold = 5;
+    int blockLengthMin = 3;
+    int blockLengthMax = 6;
 
-    public Decryptor(String secretPath, String knownPlaintext) throws IOException {
+    public Decryptor(String secretPath, String knownPlaintext, int threshold) throws IOException {
         known = knownPlaintext.toLowerCase();
+        matchThreshold = threshold;
         List<String> secret = Files.readAllLines(Paths.get(secretPath));
         StringBuilder sb = new StringBuilder();
         for (String line : secret) {
@@ -33,7 +37,7 @@ public class Decryptor {
 
     private void guessBlockLength() {
         for (int currBlockLenght : testBlockLenghts) {
-            //if (currBlockLenght >= 3 && currBlockLenght <= 6) {
+            if (currBlockLenght >= blockLengthMin && currBlockLenght <= blockLengthMax) {
 
                 int colLenght = ((secretTxt.length() - 1) / currBlockLenght);
                 System.out.println("\n\tTRY block length: " + currBlockLenght + " col length: " + colLenght);
@@ -49,22 +53,22 @@ public class Decryptor {
                         }
                     }
                 } else {
-                    System.out.println("\tSKIP");
+                    System.out.println("\tSKIP - no matching blocks found");
                 }
-           // }
+            }
         }
     }
 
     private List<Integer> findCols(char[][] blocks) {
-        int colLenght = blocks.length;
-        List<Integer> interestingCols = new ArrayList<>();
-        for (int col = 0; col < colLenght; col++) {
+        int noOfBlocks = blocks.length;
+        List<Integer> matchedBlocks = new ArrayList<>();
+        for (int block = 0; block < noOfBlocks; block++) {
             int[] assumedKey;
             int matches = 0;
-            int blockLength = blocks[col].length;
+            int blockLength = blocks[block].length;
             assumedKey = new int[blockLength];
             for (int c = 0; c < blockLength; c++) {
-                assumedKey[c] = known.indexOf(blocks[col][c]);
+                assumedKey[c] = known.indexOf(blocks[block][c]);
                 if (assumedKey[c] >= 0) {
                     matches++;
                 } else {
@@ -73,10 +77,10 @@ public class Decryptor {
             }
 
             if (matches == matchThreshold) {
-                interestingCols.add(col);
+                matchedBlocks.add(block);
                 int offset = known.length();
-                for (int j = 0; j < blocks[col].length; j++) {
-                    int currIndex = known.indexOf(blocks[col][j]);
+                for (int j = 0; j < blockLength; j++) {
+                    int currIndex = known.indexOf(blocks[block][j]);
                     if (currIndex < offset) {
                         offset = currIndex;
                     }
@@ -84,10 +88,10 @@ public class Decryptor {
                 for (int j = 0; j < assumedKey.length; j++) {
                     assumedKey[j] = assumedKey[j] - offset;
                 }
-                System.out.println("\tpossible key for " + col + ": " + Arrays.toString(assumedKey));
+                System.out.println("\tpossible key for " + block + ": " + Arrays.toString(assumedKey));
             }
         }
-        return interestingCols;
+        return matchedBlocks;
     }
 
     private char[][] reconstructBlocks(int blockLenght, int colLength) {

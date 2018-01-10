@@ -24,7 +24,8 @@ public class Programm {
         Files.delete(Paths.get("secret.txt"));
         Files.write(Paths.get("secret.txt"), sb.toString().getBytes(), StandardOpenOption.CREATE);
 
-        Decryptor decryptor = new Decryptor("secret.txt", "computer");
+        Decryptor decryptor = new Decryptor("secret.txt", "computer", 5);
+          Decryptor decryptor2 = new Decryptor("secret.txt", "that", 4); // 1x im text
     }
 
     public static void exampleRaven() throws IOException {
@@ -39,9 +40,10 @@ public class Programm {
         Files.delete(Paths.get("secret.txt"));
         Files.write(Paths.get("secret.txt"), sb.toString().getBytes(), StandardOpenOption.CREATE);
                
-        Decryptor decryptor1 = new Decryptor("secret.txt", "raven");
-        Decryptor decryptor2 = new Decryptor("secret.txt", "\"Nevermore.\"");
-//      Decryptor decryptor3 = new Decryptor("secret.txt","ancient"); 
+        Decryptor decryptor1 = new Decryptor("secret.txt", "raven", 3);
+        //Decryptor decryptor2 = new Decryptor("secret.txt", "\"Nevermore.\"",3);
+        Decryptor decryptor2 = new Decryptor("secret.txt","that",2); 
+        Decryptor decryptor3 = new Decryptor("secret.txt","ancient",3); 
     }
 
 }
