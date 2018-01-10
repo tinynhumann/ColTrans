@@ -39,14 +39,16 @@ public class Decryptor {
         for (int currBlockLenght : testBlockLenghts) {
             if (currBlockLenght >= blockLengthMin && currBlockLenght <= blockLengthMax) {
 
-                int colLenght = ((secretTxt.length() - 1) / currBlockLenght);
-                System.out.println("\n\tTRY block length: " + currBlockLenght + " col length: " + colLenght);
-                char[][] reconstructBlocks = reconstructBlocks(currBlockLenght, colLenght);
-                List<Integer> matches = findCols(reconstructBlocks);
+                int noOfBlocks = ((secretTxt.length() - 1) / currBlockLenght);
+                System.out.println("\n\tTRY\tblock length: " + currBlockLenght + "\t no of blocks: " + noOfBlocks);
+                
+                char[][] reconstructedBlocks = reconstructBlocks(currBlockLenght, noOfBlocks);
+                List<Integer> matches = matchBlocks(reconstructedBlocks);
+                
                 if (matches.size() >= 1) {
-                    for (int col = 0; col < colLenght; col++) {
-                        String line = col + "\t" + Arrays.toString(reconstructBlocks[col]);
-                        if (matches.contains(col)) {
+                    for (int b = 0; b < noOfBlocks; b++) {
+                        String line = b + "\t" + Arrays.toString(reconstructedBlocks[b]);
+                        if (matches.contains(b)) {
                             System.out.println("\t" + (char) 27 + "[31m" + line + (char) 27 + "[0m");
                         } else {
                             System.out.println("\t" + line);
@@ -59,14 +61,16 @@ public class Decryptor {
         }
     }
 
-    private List<Integer> findCols(char[][] blocks) {
+    private List<Integer> matchBlocks(char[][] blocks) {
         int noOfBlocks = blocks.length;
         List<Integer> matchedBlocks = new ArrayList<>();
+        
         for (int block = 0; block < noOfBlocks; block++) {
             int[] assumedKey;
             int matches = 0;
             int blockLength = blocks[block].length;
             assumedKey = new int[blockLength];
+            
             for (int c = 0; c < blockLength; c++) {
                 assumedKey[c] = known.indexOf(blocks[block][c]);
                 if (assumedKey[c] >= 0) {
