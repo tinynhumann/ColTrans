@@ -27,7 +27,7 @@ public class Decryptor {
         List<String> secret = Files.readAllLines(Paths.get(secretPath));
         StringBuilder sb = new StringBuilder();
         for (String line : secret) {
-            sb.append(line);
+             sb.append(line.replaceAll("\\s", ""));
         }
         secretTxt = sb.toString().toLowerCase();
         testBlockLenghts = findBlockLengths(secretTxt.length() - 1);
