@@ -19,7 +19,6 @@ public class Programm {
         StringBuilder sb = new StringBuilder();
         for (String line : clear) {
             sb.append((Encryptor.encrypt(line.replaceAll("\\s", "").trim().replaceAll("\\s", "_"), new int[]{1, 0, 3, 2, 4})));
-            sb.append(" ");
         }
         Files.delete(Paths.get("secret.txt"));
         Files.write(Paths.get("secret.txt"), sb.toString().getBytes(), StandardOpenOption.CREATE);
@@ -34,7 +33,6 @@ public class Programm {
         StringBuilder sb = new StringBuilder();
         for (String line : clear) {
             sb.append((Encryptor.encrypt(line.replaceAll("\\s", "").trim().replaceAll("\\s", "_"), new int[]{1, 0, 3, 2, 4})));
-            sb.append(" ");
         }
 
         Files.delete(Paths.get("secret.txt"));

@@ -27,11 +27,12 @@ public class Decryptor {
         List<String> secret = Files.readAllLines(Paths.get(secretPath));
         StringBuilder sb = new StringBuilder();
         for (String line : secret) {
-             sb.append(line);
+             sb.append(line.replaceAll("\\s", ""));
         }
         secretTxt = sb.toString().toLowerCase();
-        testBlockLenghts = findBlockLengths(secretTxt.length() - 1);
-        System.out.println("\n\nknown plaintext: \"" + known + "\" secret length: " + (secretTxt.length() - 1) + " possible block lengths: " + testBlockLenghts.toString());
+        testBlockLenghts = findBlockLengths(secretTxt.length());
+        System.out.println("\n\nknown plaintext: \"" + known + "\" secret length: " + (secretTxt.length()) + " possible block lengths: " + testBlockLenghts.toString());
+      System.out.println(secretTxt);
         guessBlockLength();
     }
 
@@ -39,7 +40,7 @@ public class Decryptor {
         for (int currBlockLenght : testBlockLenghts) {
             if (currBlockLenght >= blockLengthMin && currBlockLenght <= blockLengthMax) {
 
-                int noOfBlocks = ((secretTxt.length() - 1) / currBlockLenght);
+                int noOfBlocks = ((secretTxt.length()) / currBlockLenght);
                 System.out.println("\n\tTRY\tblock length: " + currBlockLenght + "\t no of blocks: " + noOfBlocks);
                 
                 char[][] reconstructedBlocks = reconstructBlocks(currBlockLenght, noOfBlocks);
