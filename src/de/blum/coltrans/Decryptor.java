@@ -104,7 +104,7 @@ public class Decryptor {
         int i = 0;
         for (int c = 0; c < blockLenght; c++) {
             for (int col = 0; col < colLength; col++) {
-                if (i < secretTxt.length() - 1) {
+                if (i < secretTxt.length()) {
                     originalBlocks[col][c] = secretTxt.charAt(i);
                     i++;
                 }
